@@ -10,6 +10,7 @@ import {
   TranslateParams,
   VideoAnalyzerParams,
   WebContentParams,
+  DiagramParams,
 } from './index';
 
 const systemContexts: { [key: string]: string } = {
@@ -724,4 +725,106 @@ XXX
       },
     ];
   },
+  diagramPrompt(params: DiagramParams): string {
+    if (params.determinType) 
+      return `あなたは図の種類を決定する専門家です。
+<content></content>の中に与えられた内容を分析し、<Choice></Choice>にリストされた図の種類から最適なものを1つだけ選択し、<output></output> の xml タグの枠にそのまま出力してください。ユーザーから特定の種類の図を作成したいと要望があればそれに沿った図を選択してください:
+<Choice>
+"FlowChart",
+"SequenceDiagram",
+"ClassDiagram",
+"StateDiagram",
+"ERDiagram",
+"UserJourney",
+"PieChart",
+"GanttChart",
+"QuadrantChart",
+"RequirementDiagram",
+"GitGraph",
+"C4Diagram",
+"MindMap",
+"SankeyChart",
+"XYChart",
+"BlockDiagram",
+"NetworkPacket",
+"KanbanDiagram",
+"Architecture"
+</Choice>
+
+選択の際は以下の点を考慮してください：
+1. 内容の性質（プロセス、関係性、時系列など）
+2. 表現したい情報の種類
+3. 図の目的（説明、分析、計画など）
+
+<content></content>
+
+<output></output>
+
+出力は必ず<Choice></Choice>の中から選んだ適切な文字列を<output></output>に与えて終えてください。それ以外の情報を出力してはいけません。もちろん挨拶や説明を前後に入れてはいけません。例外はありません。`
+    else
+      return diagramSystemPrompts[params.diagramType!] || diagramSystemPrompts.FlowChart;
+  },
+};
+
+const diagramSystemPrompts: { [key: string]: string } = {
+  flowchart: `あなたはフローチャートの専門家です。与えられた内容をMermaid.jsのフローチャート記法を使用して表現してください。
+出力は必ずMermaid.jsのフローチャート記法に従い、<Mermaid></Mermaid> のxmlタグ形式でコードブロックのみを出力してください。
+それ以外の説明や挨拶などは一切出力しないでください。`,
+
+  sequencediagram: `あなたはシーケンス図の専門家です。与えられた内容をMermaid.jsのシーケンス図記法を使用して表現してください。
+出力は必ずMermaid.jsのシーケンス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+
+  classdiagram: `あなたはクラス図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+
+  statediagram: `あなたは状態図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  erdiagram: `あなたはER図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  userjourney: `あなたはユーザージャーニーの専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  ganttchart: `あなたはガントチャートの専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  piechart: `あなたはパイチャートの専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  quadrantchart: `あなたはクアドラント図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  requirementdiagram: `あなたは要件図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  gitgraph: `あなたはGitグラフ図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  c4diagram: `あなたはC4図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  mindmap: `あなたはマインドマップ図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  sankeychart: `あなたはサンキー図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  xychart: `あなたはXY図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  blockdiagram: `あなたはブロック図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  networkpacket: `あなたはネットワークパケット図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  kanbandiagram: `あなたはカンバン図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
+  architecture: `あなたはAWSのアーキテクチャ図の専門家です。与えられたコードをMermaid.jsのクラス図記法を使用して表現してください。
+出力は必ずMermaid.jsのクラス図記法に従い、<Mermaid></Mermaid> のxmlタグ形式で終わる形式でコードブロックのみを出力してください。
+それ以外の説明などは一切出力しないでください。`,
 };
