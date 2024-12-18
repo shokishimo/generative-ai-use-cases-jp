@@ -16,6 +16,7 @@ import {
   PiRobot,
   PiVideoCamera,
   PiFlowArrow,
+  PiTreeStructure,
 } from 'react-icons/pi';
 import AwsIcon from '../assets/aws.svg?react';
 import useInterUseCases from '../hooks/useInterUseCases';
@@ -31,6 +32,7 @@ import {
   TranslatePageQueryParams,
   WebContentPageQueryParams,
   VideoAnalyzerPageQueryParams,
+  DiagramPageQueryParams,
 } from '../@types/navigate';
 import queryString from 'query-string';
 import { MODELS } from '../hooks/useModel';
@@ -142,6 +144,21 @@ const LandingPage: React.FC = () => {
         '映っているものを説明してください。もし映っているものに文字が書かれている場合はそれも読んでください。',
     };
     navigate(`/video?${queryString.stringify(params)}`);
+  };
+
+  const demoGenerateDiagram = () => {
+    const params: DiagramPageQueryParams = {
+      content: `建設業の許可: 
+建設工事の完成を請け負うことを営業するには、その工事が公共工事であるか民間工事であるかを問わず、建設業法第３条に基づき建設業の許可を受けなければなりません。
+ただし、「軽微な建設工事」のみを請け負って営業する場合には、必ずしも建設業の許可を受けなくてもよいこととされています。
+ ＊ここでいう「軽微な建設工事」とは、次の建設工事をいいます。
+[1]建築一式工事については、工事１件の請負代金の額が１，５００万円未満の工事または延べ面積が１５０㎡未満の木造住宅工事
+●「木造」…建築基準法第２条第５号に定める主要構造部が木造であるもの
+●「住宅」…住宅、共同住宅及び店舗等との併用住宅で、延べ面積が２分の１以上を居住の用に供するもの
+[2]建築一式工事以外の建設工事については、工事１件の請負代金の額が５００万円未満の工事
+※上記金額には取引に係る消費税及び地方消費税の額を含みます。`,
+    };
+    navigate(`/diagram?${queryString.stringify(params)}`);
   };
 
   const demoBlog = () => {
@@ -367,6 +384,12 @@ const LandingPage: React.FC = () => {
             description="マルチモーダルモデルによってテキストのみではなく、画像を入力することが可能になりました。こちらの機能では、映像の画像フレームとテキストを入力として LLM に分析を依頼します。"
           />
         )}
+        <CardDemo
+          label="ダイアグラム生成"
+          onClickDemo={demoGenerateDiagram}
+          icon={<PiTreeStructure />}
+          description="ダイアグラム生成機能では、自然言語による説明、文書やコードから、フローチャート、シーケンス図、マインドマップなどの様々な図を自動的に作成できます。システム設計、ビジネスフロー、プロジェクト計画などの複雑な関係性を視覚的に表現し、複雑なものの理解を効率化します。"
+        />
       </div>
 
       <h1 className="mb-6 mt-12 flex justify-center text-2xl font-bold">
